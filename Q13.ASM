@@ -1,0 +1,50 @@
+    .MODEL SMALL
+    .STACK 32
+
+    .DATA 
+MAX DB 10
+ACT DB ?
+STRING DB 11 DUP ('$')
+NEWLINE DB 0DH, 0AH, '$'
+    .CODE 
+MAIN PROC FAR   
+    MOV AX, @DATA
+    MOV DS, AX
+
+    LEA DX, MAX
+    MOV AH, 0AH
+    INT 21h
+
+    ;DISPLAY NEWLINE
+    LEA DX, NEWLINE
+    MOV AH, 09H
+    INT 21h
+
+    MOV SI, 00H
+    MOV CL, ACT
+    MOV CH, 00H
+
+L1:  CMP STRING[SI], 'a'
+    JE VOL
+    CMP STRING[SI], 'e'
+    JE VOL
+    CMP STRING[SI], 'i'
+    JE VOL
+    CMP STRING[SI], 'o'
+    JE VOL
+    CMP STRING[SI], 'u'
+    JE VOL
+    JMP CONST
+VOL: SUB STRING[SI], 20h
+CONST: INC SI
+    LOOP L1 
+
+    ;DISPLAY STRING
+    LEA DX, STRING
+    MOV AH, 09H
+    INT 21h
+
+    MOV AH, 4CH
+    INT 21H
+MAIN ENDP
+    END MAIN

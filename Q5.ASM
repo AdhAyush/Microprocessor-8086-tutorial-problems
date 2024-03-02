@@ -1,0 +1,44 @@
+    .MODEL SMALL
+    .STACK 32
+    .DATA
+MAX DB 10
+ACT DB ?
+STRING DB 11 DUP ('$')
+NEWLINE DB 0AH, '$'
+
+    .CODE
+MAIN PROC FAR
+    MOV AX, @DATA
+    MOV DS, AX
+
+    LEA DX, MAX
+    MOV AH, 0AH
+    INT 21H
+
+;CLEAR SCREEN
+    MOV AH, 06H
+    MOV BH, 07H
+    MOV CX, 00H
+    MOV DX, 1847H
+    MOV AL, 00h
+    INT 10H
+;SET CURSER
+    MOV AH, 02H
+    MOV BH, 00h
+    MOV DH, 10
+    MOV DL , 20
+    INT 10H
+;DISPLAY NEWLINE 
+    MOV AH, 09H
+    LEA DX, NEWLINE
+    INT 21H
+
+;DISPLAY OUTPUT
+    LEA DX, STRING
+    INT 21H
+
+    MOV AH, 4CH
+    INT 21H
+MAIN ENDP
+    END MAIN
+    

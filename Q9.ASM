@@ -1,0 +1,55 @@
+.MODEL SMALL
+.STACK 32
+
+.DATA
+NEWLINE DB 0DH,0AH,'$'
+.CODE 
+MAIN PROC FAR
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV AH, 01h
+    INT 21h
+
+    SUB AL, 30H
+    MOV CL,AL
+    MOV CH, 00h
+
+    LEA DX, NEWLINE
+    MOV AH, 09H
+    INT 21H
+
+    MOV AL, 00H
+    MOV AH, 01h
+L1: ADD AL, AH
+    INC AH
+    LOOP L1
+
+    MOV AH, 00H
+
+     ;DECIMAL CONVERSION
+    MOV BX, 00h
+    MOV CX, 0AH
+
+L2: MOV DX, 0000H
+    DIV CX
+    ADD DX, 0030H
+    PUSH DX
+    INC BX
+    CMP AX, 0
+    JA L2
+
+    ;SHOW
+    MOV CX, BX
+    MOV AH, 02H
+SHOW: POP DX
+    INT 21H
+    LOOP SHOW
+
+    MOV AH, 4CH
+    INT 21H
+
+MAIN ENDP
+END MAIN
+
+

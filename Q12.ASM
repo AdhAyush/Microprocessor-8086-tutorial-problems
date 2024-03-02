@@ -1,0 +1,71 @@
+    .MODEL SMALL
+    .STACK 32
+    .DATA 
+
+MAX DB 10
+ACT DB ?
+STRING DB 11 DUP("$")
+NEWLINE DB 0DH, 0AH, '$'
+
+    .CODE 
+
+MAIN PROC FAR
+    MOV AX, @DATA
+    MOV DS, AX
+
+;INPUT STRING
+    MOV AH, 0AH
+    LEA DX, MAX
+    INT 21h
+;NEWLINE
+    MOV AH, 09H
+    LEA DX, NEWLINE
+    INT 21H
+
+;PROCESS STRING
+    MOV AL, 00H
+    MOV CL, ACT
+    MOV CH, 00H
+
+    LEA SI, STRING
+L1: CMP BYTE PTR [SI], 'A'
+    JE VOW
+    CMP BYTE PTR [SI] , 'E'
+    JE VOW
+    CMP BYTE PTR [SI], 'I'
+    JE VOW
+    CMP BYTE PTR [SI], 'O'
+    JE VOW  
+    CMP BYTE PTR [SI], 'U'
+    JE VOW
+    JMP CON
+VOW: INC AL
+CON: INC SI
+    LOOP L1
+
+    ;DISPLAY RESULT IN DECIMAL FORMAT
+
+    MOV AH, 00
+    MOV BX, 00h
+    MOV CX, 10 ;DIVISOR
+DCE: MOV DX, 00
+    DIV CX
+
+    PUSH DX
+    INC BX
+    CMP AX, 00
+    JNE DCE
+
+    ;DISPLAY RESULT
+    MOV AH, 02
+    MOV CX, BX
+POPIT: POP DX
+    ADD DL, 30H
+    INT 21H
+    LOOP POPIT
+
+    MOV AH, 4CH
+    INT 21H
+MAIN ENDP
+    END MAIN
+

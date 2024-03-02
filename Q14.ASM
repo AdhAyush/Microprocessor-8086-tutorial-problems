@@ -1,0 +1,64 @@
+    .MODEL SMALL
+    .STACK 32
+    .DATA 
+
+MAX DB 10
+ACT DB ?
+STRING DB 11 DUP('$')
+NEWLINE DB 0DH, 0AH, '$'
+
+    .CODE 
+MAIN PROC FAR
+    MOV AX, @DATA 
+    MOV DS, AX 
+
+    MOV AH, 0AH
+    LEA DX, MAX
+    INT 21h
+
+
+    ;PRINT NEWLINE
+    LEA DX, NEWLINE
+    MOV AH, 09H
+    INT 21H
+
+    ;PROCESS STRING
+    LEA SI, STRING
+
+    MOV CL, ACT
+L1: CMP BYTE PTR [SI], 61h
+    JB SKIP
+    CMP BYTE PTR [SI], 7Ah
+    JA SKIP
+    MOV AL, BYTE PTR [SI]
+    SUB AL, 20h
+    MOV BYTE PTR [SI], AL
+SKIP: 
+    INC SI
+    LOOP L1
+
+    MOV AH, 06H
+    MOV BH, 0F0H
+    MOV AL, 00H
+    MOV CH, 2
+    MOV CL, 10
+    MOV DH, 22
+    MOV DL, 70
+    INT 10H
+
+    ;SET CURSOR
+    MOV AH, 02H
+    MOV BH, 0
+    MOV DH, 12
+    MOV DL, 40
+    INT 10H
+
+    ;DISPLAY STRING
+    MOV AH, 09H
+    LEA DX, STRING
+    INT 21h
+
+    MOV AH, 4CH
+    INT 21H
+MAIN ENDP
+    END MAIN

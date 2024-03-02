@@ -1,0 +1,41 @@
+    .model SMALL    
+    .STACK 32
+    .DATA
+MAX_LEN DB 10
+ACT_LEN DB ?
+STRING DB 11 DUP('$')
+NEWLINE DB 0AH, '$'
+    .CODE
+MAIN PROC FAR
+    MOV AX, @DATA
+    MOV DS, AX
+
+;GET INPUT STRING
+    LEA DX, MAX_LEN
+    MOV AH, 0Ah
+    INT 21h
+
+    MOV AH, 09H
+    LEA DX, NEWLINE
+    INT 21H
+
+    MOV CH , 0
+    MOV CL, ACT_LEN
+    LEA BX, STRING
+L2: CMP BYTE PTR [BX], 61h
+    JB L1
+    CMP BYTE PTR [BX], 7Ah
+    JA L1
+    SUB BYTE PTR [BX], 20h
+ L1: INC BX
+    LOOP L2
+
+MOV AH , 09H
+    LEA DX, STRING
+    INT 21H
+
+    MOV AH, 4CH
+    INT 21h
+
+MAIN ENDP
+    END MAIN

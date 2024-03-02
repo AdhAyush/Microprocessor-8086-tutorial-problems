@@ -1,0 +1,43 @@
+.MODEL SMALL
+.STACK 32
+
+.DATA 
+
+
+.CODE 
+MAIN PROC FAR
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV BX, 1h
+    MOV DX, 01h
+
+LOOPP: INC BX
+    ADD DX, BX
+    CMP BX, 100
+    JNZ LOOPP
+
+
+    MOV AX, DX
+
+    MOV BX, 0
+L2: MOV DX, 0
+    MOV CX, 10H
+    DIV CX
+    ADD DX, 30H
+    PUSH DX
+    INC BX
+    CMP AX, 0
+    JNZ L2
+
+    MOV AH, 2
+    MOV CX, BX
+L3: POP DX
+    INT 21H
+    LOOP L3
+
+    MOV AH, 4CH
+    INT 21H
+
+    MAIN ENDP
+    END MAIN

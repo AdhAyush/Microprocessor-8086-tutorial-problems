@@ -1,0 +1,47 @@
+    .MODEL SMALL
+    .STACK 32
+    .DATA
+TABLE DW 10,20, 30, 40, 50, 60,70,80,90,100
+
+    .CODE
+    MAIN PROC FAR
+
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV AX, 0
+    MOV CX, 10
+    LEA SI, TABLE
+
+NEXT: MOV BX, [SI]
+    CMP BX, 30
+    JBE L1
+    CMP BX, 100
+    JAE L1
+
+    ADD AX, BX
+L1: INC SI
+    LOOP NEXT
+
+    ;HEX CONVERSION
+    MOV BX, 0
+L2: MOV DX, 0
+    MOV CX, 10H
+    DIV CX
+    ADD DX, 30H
+    PUSH DX
+    INC BX
+    CMP AX, 0
+    JNZ L2
+
+    MOV AH, 2
+    MOV CX, BX
+L3: POP DX
+    INT 21H
+    LOOP L3
+
+    MOV AH, 4CH
+    INT 21H
+
+    MAIN ENDP
+    END MAIN

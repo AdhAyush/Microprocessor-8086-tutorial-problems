@@ -1,0 +1,91 @@
+    .MODEL SMALL
+    .STACK 32
+    .DATA
+
+NUM DB ?
+NEWLINE DB 0DH, 0AH, '$'
+TEMP DB 01H
+COUNTER DB ?
+    .CODE 
+MAIN PROC FAR
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV AH, 01H
+    INT 21h
+
+    SUB AL, 30H
+    MOV NUM, AL
+
+
+    ;DISPLAY NEW LINE
+    LEA DX, NEWLINE
+    MOV AH, 09H
+    INT 21H
+
+    ;CONVERT TO 
+
+
+    MOV COUNTER, 10
+
+;GENERATE MULTLIPLICATION TABLE
+L1:    MOV BL, TEMP
+    MOV DL, NUM
+    ADD DL, 30H
+    MOV AH, 02H
+    INT 21h
+
+    MOV DL, '*'
+    MOV AH, 02H
+    INT 21h
+
+    MOV DL, BL
+    ADD DL, 30H
+    MOV AH, 02H
+    INT 21h
+
+    MOV DL, '='
+    MOV AH, 02H
+    INT 21h
+
+    MOV AL, NUM
+    MUL BL
+    
+    ;-------------------
+    MOV AH, 00
+    MOV BX, 00h
+    MOV CX, 10 ;DIVISOR
+DCE: MOV DX, 00
+    DIV CX
+
+    PUSH DX
+    INC BX
+    CMP AX, 00
+    JNE DCE
+
+    ;DISPLAY RESULT
+    MOV AH, 02
+    MOV CX, BX
+POPIT: POP DX
+    ADD DL, 30H
+    INT 21H
+    LOOP POPIT
+
+    ;--------------
+
+    ;DISPLAY NEW LINE
+    LEA DX, NEWLINE
+    MOV AH, 09H
+    INT 21H
+
+    INC TEMP
+    DEC COUNTER
+    CMP COUNTER, 00
+    JNZ L1
+
+    MOV AH, 4CH
+    INT 21H
+
+MAIN ENDP
+    END MAIN
+
